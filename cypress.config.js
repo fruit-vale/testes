@@ -2,9 +2,9 @@ const { defineConfig } = require('cypress');
 
 // Ambiente: dev (padrão), stg ou prod  ->  npx cypress run --env ambiente=stg
 const ambientes = {
-  dev:  { baseUrl: 'http://localhost:5173',          apiUrl: 'http://localhost:3000' },
-  stg:  { baseUrl: 'https://stg.fruitvale.exemplo',  apiUrl: 'https://api-stg.fruitvale.exemplo' },
-  prod: { baseUrl: 'https://fruitvale.exemplo',      apiUrl: 'https://api.fruitvale.exemplo' },
+  dev:  { baseUrl: 'https://fruitvale.com.br/',          apiUrl: 'https://fruitvale.com.br/' },
+  stg:  { baseUrl: 'https://fruitvale.com.br/',  apiUrl: 'https://fruitvale.com.br/' },
+  prod: { baseUrl: 'https://fruitvale.com.br',      apiUrl: 'https://fruitvale.com.br/' },
 };
 
 module.exports = defineConfig({

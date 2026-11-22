@@ -1,14 +1,12 @@
 describe('Autenticação - Login', () => {
+
+  const url = 'https://fruitvale.com.br';
+
   it('faz login com credenciais válidas', () => {
-    // TODO
-  });
-  it('bloqueia login com senha inválida', () => {
-    // TODO
-  });
-  it('bloqueia usuário inativo', () => {
-    // TODO
-  });
-  it('expira sessão após o tempo do token', () => {
-    // TODO
+    cy.visit(url);
+    cy.contains('a', 'Entrar na plataforma').should('be.visible').click();
+    cy.get('[name="email"]').type('admin@fruitvale.com.br');
+    cy.get('[name="senha"]').type('admin0@');
+    cy.get('button[type="submit"]').click();
   });
 });
