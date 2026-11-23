@@ -67,8 +67,12 @@ const desenharLoteNoMapa = () => {
   mapa().click(150, 150); // fecha o polígono no primeiro ponto
 };
 
+// todo card de lote tem o botão "Histórico", com ou sem mapa
+const SELETOR_CARD = 'button:contains("Histórico")';
+
 describe('Cultivos e lotes', () => {
   beforeEach(() => {
+    cy.intercept('GET', '**/lotes').as('lotes');
     cy.loginAdmin();
     cy.visit(ROTA);
   });
@@ -83,17 +87,33 @@ describe('Cultivos e lotes', () => {
   });
 
   it('cadastra um novo lote de Manga Tommy Atkins marcado no mapa', () => {
-    // quantos lotes existem antes (cada card tem um botão "Ver no mapa")
-    cy.get('button:contains("Ver no mapa")').its('length').then((antes) => {
+    // espera a lista carregar para contar certo (pode ser zero lotes)
+    cy.wait('@lotes');
+    cy.wait(1000);
+
+    cy.get('body').then(($body) => {
+      const antes = $body.find(SELETOR_CARD).length;
+
       cy.contains('button', /novo lote/i).click();
       cy.contains(/novo lote/i).should('be.visible');
 
       // a identificação é preenchida pelo sistema (somente leitura)
       campo(/identificação/i).should('have.attr', 'readonly');
 
-      escolherPrimeira(/propriedade/i);
+      escolherPorTexto(/propriedade/i, /vale verde/i);
       escolherPorTexto(/cultura/i, /manga.*tommy/i);
       campo(/data de plantio/i).type('2026-11-22');
+
+      // a previsão de colheita pode ser calculada sozinha ou ficar liberada:
+      // se estiver bloqueada, confere que veio preenchida; se não, digita
+      cy.wait(500);
+      campo(/previsão de colheita/i).then(($input) => {
+        if ($input.is(':disabled') || $input.attr('readonly')) {
+          cy.wrap($input).should('not.have.value', '');
+        } else {
+          cy.wrap($input).clear().type('2027-03-22');
+        }
+      });
 
       desenharLoteNoMapa();
 
@@ -113,7 +133,7 @@ describe('Cultivos e lotes', () => {
 
       // o modal fecha e a lista ganha um lote
       cy.contains(/lote \d+ — /i).should('not.exist');
-      cy.get('button:contains("Ver no mapa")').should('have.length', antes + 1);
+      cy.get(SELETOR_CARD).should('have.length', antes + 1);
     });
   });
 });

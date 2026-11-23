@@ -61,6 +61,9 @@ describe('Empresas', () => {
   it('cadastra uma nova empresa', () => {
     const razaoSocial = `Empresa Teste Cypress ${Date.now()}`;
 
+    // monitora a chamada que carrega os municípios (IBGE)
+    cy.intercept('GET', '**/localidades/estados/*/municipios*').as('municipios');
+
     cy.contains('button', /nova empresa/i).click();
 
     campo(/razão social/i).type(razaoSocial);
@@ -71,7 +74,16 @@ describe('Empresas', () => {
 
     // o município só habilita depois de escolher o estado
     escolher(/estado/i, 'Pernambuco');
-    escolher(/munic[ií]pio/i, 'Recife');
+    cy.wait('@municipios');
+
+    cy.contains('label', /munic[ií]pio/i)
+      .parent()
+      .find('button, [role="combobox"]')
+      .first()
+      .should('not.be.disabled')
+      .click();
+
+    cy.contains('Recife', { timeout: 10000 }).click();
 
     cy.contains('button', /cadastrar e enviar contrato/i).click();
 
