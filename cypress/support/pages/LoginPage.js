@@ -3,8 +3,8 @@ export function fazerLogin(perfil = 'admin') {
     const { email, senha } = usuarios[perfil];
 
     cy.visit('/login');
-    cy.get('[name="email"]').type('admin@fruitvale.com.br');
-    cy.get('[name="senha"]').type('admin0@', { log: false });
+    cy.get('[name="email"]').type(email);
+    cy.get('[name="senha"]').type(senha, { log: false });
     cy.get('button[type="submit"]').click();
   });
 

@@ -1,5 +1,5 @@
 {
-  "admin":    { "email": "admin@fruitvale.test",    "senha": "TROCAR" },
+  "admin":    { "email": "admin@fruitvale.com.br", "senha": "admin0@" },
   "produtor": { "email": "produtor@fruitvale.test", "senha": "TROCAR" },
   "analista": { "email": "analista@fruitvale.test", "senha": "TROCAR" },
   "inativo":  { "email": "inativo@fruitvale.test",  "senha": "TROCAR" }
