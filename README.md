@@ -14,9 +14,9 @@ Estrutura baseada no Plano de Testes de Software (v1.0).
 
 ```bash
 npm install
-npm run cy:open                 # modo interativo
-npm test                        # todos os testes (DEV)
-npx cypress run --env ambiente=stg
+npx cypress install
+npm run cy:open
+
 ```
 
 Use atributos `data-cy` no frontend para os seletores.
