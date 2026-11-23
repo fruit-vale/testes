@@ -1,0 +1,86 @@
+
+name: Cypress - Testes Automatizados
+
+on:
+  push:
+    branches:
+      - souza-testes
+
+  pull_request:
+    branches:
+      - souza-testes
+
+  workflow_dispatch:
+
+jobs:
+  cypress-tests:
+    name: Executar testes Cypress
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixar o código do repositório
+      - name: Checkout do projeto
+        uses: actions/checkout@v4
+
+      # 2. Configurar Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # 3. Instalar dependências
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Limpar relatórios anteriores
+      - name: Limpar relatórios anteriores
+        run: |
+          rm -rf cypress/reports
+          rm -rf reports/cypress
+          mkdir -p cypress/reports
+          mkdir -p reports/cypress
+
+      # 5. Executar testes
+      - name: Executar Cypress
+        id: cypress
+        continue-on-error: true
+        run: npm run cy:run
+
+      # 6. Consolidar arquivos JSON
+      - name: Consolidar resultados
+        if: always()
+        run: |
+          if compgen -G "cypress/reports/*.json" > /dev/null; then
+            npm run report:merge
+          else
+            echo "Nenhum relatório JSON foi gerado."
+          fi
+
+      # 7. Gerar relatório HTML
+      - name: Gerar relatório HTML
+        if: always()
+        run: |
+          if [ -f reports/cypress/merged-report.json ]; then
+            npm run report:html
+          else
+            echo "Não foi possível gerar o HTML."
+          fi
+
+      # 8. Disponibilizar relatório para download
+      - name: Publicar relatório como artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fruitvale-cypress-report
+          path: |
+            reports/cypress/
+            cypress/screenshots/
+            cypress/videos/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      # 9. Manter o workflow como falha se algum teste falhar
+      - name: Verificar resultado dos testes
+        if: steps.cypress.outcome == 'failure'
+        run: exit 1
