@@ -1,6 +1,6 @@
 {
   "admin":    { "email": "admin@fruitvale.com.br", "senha": "admin0@" },
-  "produtor": { "email": "produtor@fruitvale.test", "senha": "TROCAR" },
-  "analista": { "email": "analista@fruitvale.test", "senha": "TROCAR" },
+  "produtor": { "email": "filipe.melo@pe.senac.br", "senha": "maligno123" },
+  "analista": { "email": "lucas.souza0020016324@edu.pe.senac.br", "senha": "@@Hotel3221" },
   "inativo":  { "email": "inativo@fruitvale.test",  "senha": "TROCAR" }
 }
